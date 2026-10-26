@@ -23,6 +23,25 @@ if "max_tokens" not in st.session_state:
 if "temperature" not in st.session_state:
     st.session_state.temperature = session.temperature
 
+
+def load_saved_conversation() -> None:
+    """Load a chat before Streamlit recreates widgets on the next run."""
+    try:
+        loaded = ChatSession.load(CHAT_PATH)
+    except FileNotFoundError:
+        st.session_state.load_notice = ("warning", "No saved conversation was found.")
+        return
+    except (OSError, ValueError):
+        st.session_state.load_notice = ("error", "The saved conversation could not be loaded.")
+        return
+
+    st.session_state.session = loaded
+    st.session_state.system_prompt = loaded.system
+    st.session_state.max_tokens = loaded.max_tokens
+    st.session_state.temperature = loaded.temperature
+    st.session_state.load_notice = ("success", "Conversation loaded.")
+
+
 with st.sidebar:
     st.header("Settings")
     session.system = st.text_area("System prompt", height=140, key="system_prompt")
@@ -45,19 +64,11 @@ with st.sidebar:
             st.success("Conversation saved locally.")
         except OSError:
             st.error("Could not save the conversation file.")
-    if st.button("Load saved conversation"):
-        try:
-            loaded = ChatSession.load(CHAT_PATH)
-            st.session_state.session = loaded
-            st.session_state.system_prompt = loaded.system
-            st.session_state.max_tokens = loaded.max_tokens
-            st.session_state.temperature = loaded.temperature
-        except FileNotFoundError:
-            st.warning("No saved conversation was found.")
-        except (OSError, ValueError):
-            st.error("The saved conversation could not be loaded.")
-        else:
-            st.rerun()
+    st.button("Load saved conversation", on_click=load_saved_conversation)
+
+if notice := st.session_state.pop("load_notice", None):
+    level, message = notice
+    getattr(st, level)(message)
 
 st.caption("AI can make mistakes. Check important information.")
 
