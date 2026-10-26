@@ -35,7 +35,7 @@ def trim_history(messages: list[dict], budget: int) -> list[dict]:
 @dataclass
 class ChatSession:
     system: str = DEFAULT_SYSTEM
-    model: str = field(default_factory=lambda: os.getenv("MODEL", "claude-sonnet-5-5"))
+    model: str = field(default_factory=lambda: os.getenv("MODEL", "gemini-3.8-flash"))
     max_tokens: int = 1024
     history_budget: int = 6000
     messages: list = field(default_factory=list)
@@ -43,9 +43,9 @@ class ChatSession:
 
     def _get_client(self):
         if self._client is None:
-            import anthropic  # imported lazily so tests do not need the SDK
+            from google import genai
 
-            self._client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
+            self._client = genai.Client()  # reads GEMINI_API_KEY
         return self._client
 
     def send(self, user_text: str) -> str:
@@ -54,17 +54,26 @@ class ChatSession:
             raise ValueError("Message is empty.")
         self.messages.append({"role": "user", "content": user_text})
         window = trim_history(self.messages, self.history_budget)
-        resp = self._get_client().messages.create(
+        contents = [
+            {
+                "role": "model" if message["role"] == "assistant" else message["role"],
+                "parts": [{"text": message["content"]}],
+            }
+            for message in window
+        ]
+        response = self._get_client().models.generate_content(
             model=self.model,
-            max_tokens=self.max_tokens,
-            system=self.system,
-            messages=window,
+            contents=contents,
+            config={
+                "system_instruction": self.system,
+                "max_output_tokens": self.max_tokens,
+            },
         )
-        reply = "".join(b.text for b in resp.content if getattr(b, "text", None))
+        reply = response.text or ""
         self.messages.append({"role": "assistant", "content": reply})
         return reply
 
-    def clear(self):
+    def clear(self) -> None:
         self.messages.clear()
 
 

@@ -13,8 +13,8 @@ Create virtual env, install requirements, get an API key, put it in `.env`. Run 
 Implement `ChatSession.send()` with history. Verify the model remembers earlier turns.
 
 - [ ] Task completed
-- [ ] Notes written in the project log
-- [ ] Changes committed
+- [x] Notes written in the project log
+- [x] Changes committed
 
 ## Phase 3: UI
 Build the Streamlit chat page. Add sidebar controls: persona, temperature, clear chat.
@@ -40,4 +40,4 @@ Streaming, save/load chats, README screenshots, deploy, record a 2-minute demo.
 ## Project log
 | Date | What I did | Blockers | Next |
 |---|---|---|---|
-| 2026-10-26 | Added Gemini SDK dependency and Gemini environment configuration; documented setup; existing suite passed (3 tests). | `GEMINI_API_KEY` is not configured, so the one-shot Gemini API smoke test remains pending. | Set the key in local `.env` and verify the Phase 1 smoke test, then continue to Phase 2. |
+| 2026-10-26 | Added Gemini SDK dependency and environment configuration, then implemented `ChatSession.send()` with Gemini conversation context; test suite passed (4 tests). | No local `GEMINI_API_KEY`, so the terminal smoke test and live five-turn memory check remain pending. | Add the key locally, run `python -m src.chat`, then verify context across five turns. |

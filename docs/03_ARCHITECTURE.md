@@ -28,6 +28,7 @@ User -> Streamlit UI (src/app.py)
 | Decision | Options considered | Choice | Why |
 |---|---|---|---|
 | LLM provider | Anthropic, Gemini, OpenAI | Gemini API | Selected by the project owner; authenticate with `GEMINI_API_KEY`. |
+| Conversation context | Provider-managed session, local history | Send local history with each request | Keeps `ChatSession` testable and lets the app control its conversation history. Assistant turns map to Gemini's `model` role. |
 
 ## Module responsibilities
 See the files in `src/`. Keep logic (testable functions) separate from UI and scripts.
