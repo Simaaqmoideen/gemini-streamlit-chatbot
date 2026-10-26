@@ -6,6 +6,7 @@ venv/
 .ipynb_checkpoints/
 .pytest_cache/
 .streamlit-*.log
+.streamlit-*.tmp
 data/*
 !data/README.md
 !data/sample_movies.csv
