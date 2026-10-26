@@ -11,7 +11,7 @@ A small, inspectable AI chat app built with Streamlit and Google Gemini. Adjust 
 
 ## Preview
 
-![Screenshot of the Gemini Streamlit Chatbot](reports/chatbot-ui.png)
+![Illustrative preview of the Gemini Streamlit Chatbot interface](reports/chatbot-preview.svg)
 
 ## What it does
 
@@ -179,7 +179,8 @@ A short live UI smoke check returned the expected `READY_OK` response. This conf
 ├── tests/
 │   └── test_chat.py         # Automated unit tests
 ├── reports/
-│   └── chatbot-ui.png       # App screenshot
+│   ├── chatbot-preview.svg  # README illustration
+│   └── chatbot-ui.png       # UI smoke-test capture
 ├── data/
 │   └── README.md            # Local data and persistence notes
 ├── docs/                    # Project brief, requirements, design, testing, risks
