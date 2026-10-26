@@ -1,5 +1,5 @@
 import pytest
-from src.chat import ChatSession, trim_history
+from src.chat import ChatError, ChatSession, trim_history
 
 
 def msgs(n, size=40):
@@ -68,3 +68,70 @@ def test_send_uses_gemini_and_sends_prior_turns():
         "role": "assistant",
         "content": "It was blue.",
     }
+
+
+class FakeAPIError(Exception):
+    def __init__(self, code, detail="private provider detail"):
+        super().__init__(detail)
+        self.code = code
+
+
+def test_send_retries_transient_errors(monkeypatch):
+    client = FakeClient([FakeResponse("Recovered")])
+    succeed = client.models.generate_content
+    failures = iter([FakeAPIError(503), FakeAPIError(503)])
+
+    def fail_twice_then_succeed(**kwargs):
+        try:
+            raise next(failures)
+        except StopIteration:
+            return succeed(**kwargs)
+
+    client.models.generate_content = fail_twice_then_succeed
+    delays = []
+    monkeypatch.setattr("src.chat.time.sleep", delays.append)
+    session = ChatSession(_client=client)
+
+    assert session.send("hello") == "Recovered"
+    assert delays == [0.25, 0.5]
+
+
+def test_send_returns_friendly_error_and_rolls_back_failed_turn():
+    class FailingModels:
+        def generate_content(self, **kwargs):
+            raise FakeAPIError(429)
+
+    class FailingClient:
+        models = FailingModels()
+
+    session = ChatSession(_client=FailingClient())
+
+    with pytest.raises(ChatError, match="too many requests") as raised:
+        session.send("hello")
+
+    assert "private provider detail" not in str(raised.value)
+    assert session.messages == []
+
+
+def test_send_stops_after_bounded_retries(monkeypatch):
+    class FailingModels:
+        def __init__(self):
+            self.calls = 0
+
+        def generate_content(self, **kwargs):
+            self.calls += 1
+            raise FakeAPIError(503)
+
+    class FailingClient:
+        def __init__(self):
+            self.models = FailingModels()
+
+    monkeypatch.setattr("src.chat.time.sleep", lambda _delay: None)
+    client = FailingClient()
+    session = ChatSession(_client=client)
+
+    with pytest.raises(ChatError, match="temporarily unavailable"):
+        session.send("hello")
+
+    assert client.models.calls == 3
+    assert session.messages == []

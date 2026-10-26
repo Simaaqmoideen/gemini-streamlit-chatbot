@@ -3,7 +3,7 @@ import sys, pathlib; sys.path.insert(0, str(pathlib.Path(__file__).resolve().par
 import streamlit as st
 from dotenv import load_dotenv
 
-from src.chat import ChatSession, DEFAULT_SYSTEM
+from src.chat import ChatError, ChatSession, DEFAULT_SYSTEM
 
 load_dotenv()
 st.set_page_config(page_title="AI Chatbot", page_icon=":speech_balloon:")
@@ -42,6 +42,7 @@ if prompt := st.chat_input("Ask something..."):
         try:
             with st.spinner("Thinking..."):
                 st.markdown(session.send(prompt))
-        except Exception as exc:  # show a friendly error instead of a stack trace
-            session.messages.pop()  # remove the unanswered user turn
-            st.error(f"Sorry, something went wrong: {exc}")
+        except ChatError as exc:
+            st.error(str(exc))
+        except Exception:
+            st.error("The chat could not complete that request. Please try again.")
