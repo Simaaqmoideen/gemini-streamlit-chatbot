@@ -32,7 +32,7 @@ User -> Streamlit UI (src/app.py)
 | Reply variation | Fixed, user-configurable | Temperature control in the Streamlit sidebar | Lets users tune response variation per session. |
 | Saved chats | No persistence, local JSON | `data/chat_history.json` | Simple local save/load for the demo; the key is never stored in the chat file. |
 
-Gemini 3.8 Flash uses `THINKING_LEVEL=low` by default to reduce first-token latency for everyday chat; users can choose `medium` or `high` in `.env` for more reasoning.
+Gemini 3.5 Flash-Lite with `THINKING_LEVEL=minimal` is the default after a live Gemini 3.8 Flash request returned HTTP 503. Users can set `MODEL` and `THINKING_LEVEL` in `.env` to select other available Gemini models and reasoning levels.
 
 ## Module responsibilities
 See the files in `src/`. Keep logic (testable functions) separate from UI and scripts.

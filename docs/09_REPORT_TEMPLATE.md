@@ -8,7 +8,7 @@
 
 ## 2. Abstract
 
-This project builds a small conversational study helper using a Gemini model. A Streamlit interface sends the system instruction and local conversation turns to the Gemini API through Google's Gen AI Python SDK. No training dataset is used, and conversations can optionally be saved as local JSON. The automated test suite passes 13 tests, and the interface was opened and visually checked. Live answer quality remains unmeasured; diagnostic requests exposed provider availability and latency issues.
+This project builds a small conversational study helper using a Gemini model. A Streamlit interface sends the system instruction and local conversation turns to the Gemini API through Google's Gen AI Python SDK. No training dataset is used, and conversations can optionally be saved as local JSON. The automated test suite passes 13 tests, and a short end-to-end UI smoke test successfully returned a reply. Live answer quality remains unmeasured; diagnostic requests exposed provider availability and latency issues.
 
 ## 3. Introduction
 
@@ -23,16 +23,16 @@ Conversational assistants can help users explore questions and follow up without
 
 ## 5. Method
 
-The Streamlit UI keeps a `ChatSession` in session state. `ChatSession` sends the configured system instruction, temperature, output limit, low-by-default Gemini thinking level, and prior user/model turns through Google's Gen AI SDK. Assistant turns are translated to Gemini's `model` role. UI replies use the SDK streaming call; transient failures are retried a bounded number of times, and displayed errors omit provider details. A rough character-based estimate trims old history. Local JSON save/load preserves conversation settings and validates message roles/content.
+The Streamlit UI keeps a `ChatSession` in session state. `ChatSession` sends the configured system instruction, temperature, output limit, minimal-by-default Gemini thinking level, and prior user/model turns through Google's Gen AI SDK. Assistant turns are translated to Gemini's `model` role. UI replies use the SDK streaming call; transient failures are retried a bounded number of times, and displayed errors omit provider details. A rough character-based estimate trims old history. Local JSON save/load preserves conversation settings and validates message roles/content.
 
 ## 6. Results
 
 | Measure | Starter baseline | Implemented project | Interpretation |
 |---|---:|---:|---|
-| Automated tests passing | 3 of 3 (0.14s) | 13 of 13 (3.04s; one SDK deprecation warning) | Unit coverage grew; this is not a measure of model quality. |
-| Live answer quality on 10 prompts | Not measured | Not measured | Manual set remains pending; 3.8 Flash returned HTTP 503 and one Flash-Lite response took 33.06s to first chunk. |
+| Automated tests passing | 3 of 3 (0.14s) | 13 of 13 (3.22s; one SDK deprecation warning) | Unit coverage grew; this is not a measure of model quality. |
+| Live answer quality on 10 prompts | Not measured | Not measured | Manual set remains pending; 3.8 Flash returned HTTP 503, while a short Flash-Lite UI check succeeded. |
 | Context recall across 5 turns | Not measured | Not measured | Request construction is unit-tested; live Gemini recall is unverified. |
-| Response latency | Not measured | 33.06s first chunk (Flash-Lite, minimal thinking); 3.8 Flash returned HTTP 503 | These are single diagnostic requests during a provider availability issue, not a stable benchmark. |
+| Response latency | Not measured | One Flash-Lite diagnostic first chunk: 33.06s; later UI smoke test succeeded but was not timed | These are single diagnostic runs, not a stable benchmark. |
 
 ## 7. Discussion
 

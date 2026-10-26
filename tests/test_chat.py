@@ -56,10 +56,10 @@ def test_send_uses_gemini_and_sends_prior_turns():
     assert session.send("What color was it?") == "It was blue."
 
     first_call, second_call = client.models.calls
-    assert first_call["model"] == "gemini-3.8-flash"
+    assert first_call["model"] == "gemini-3.5-flash-lite"
     assert first_call["config"]["system_instruction"] == session.system
     assert first_call["config"]["temperature"] == 0.2
-    assert first_call["config"]["thinking_config"]["thinking_level"] == "low"
+    assert first_call["config"]["thinking_config"]["thinking_level"] == "minimal"
     assert second_call["contents"] == [
         {"role": "user", "parts": [{"text": "Hi"}]},
         {"role": "model", "parts": [{"text": "Hello!"}]},
@@ -162,7 +162,7 @@ def test_stream_yields_chunks_and_saves_complete_reply():
     session = ChatSession(_client=client)
 
     assert list(session.stream("Hi")) == ["Hello", " there"]
-    assert client.models.calls[0]["config"]["thinking_config"]["thinking_level"] == "low"
+    assert client.models.calls[0]["config"]["thinking_config"]["thinking_level"] == "minimal"
     assert client.models.calls[0]["contents"] == [
         {"role": "user", "parts": [{"text": "Hi"}]}
     ]

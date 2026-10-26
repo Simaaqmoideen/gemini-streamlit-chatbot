@@ -10,7 +10,7 @@ DEFAULT_SYSTEM = (
     "You are a helpful, concise assistant. If you are not sure about something, "
     "say so instead of guessing."
 )
-DEFAULT_THINKING_LEVEL = "low"
+DEFAULT_THINKING_LEVEL = "minimal"
 MAX_API_ATTEMPTS = 3
 RETRY_DELAYS_SECONDS = (0.25, 0.5)
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
@@ -90,7 +90,9 @@ def user_error_message(error: Exception) -> str:
 @dataclass
 class ChatSession:
     system: str = DEFAULT_SYSTEM
-    model: str = field(default_factory=lambda: os.getenv("MODEL", "gemini-3.8-flash"))
+    model: str = field(
+        default_factory=lambda: os.getenv("MODEL", "gemini-3.5-flash-lite")
+    )
     max_tokens: int = 1024
     temperature: float = 0.7
     history_budget: int = 6000
@@ -260,7 +262,7 @@ class ChatSession:
             raise ValueError("Chat file contains invalid messages.")
         return cls(
             system=str(payload.get("system", DEFAULT_SYSTEM)),
-            model=str(payload.get("model", "gemini-3.8-flash")),
+            model=str(payload.get("model", "gemini-3.5-flash-lite")),
             max_tokens=int(payload.get("max_tokens", 1024)),
             temperature=float(payload.get("temperature", 0.7)),
             history_budget=int(payload.get("history_budget", 6000)),
