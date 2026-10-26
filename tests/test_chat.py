@@ -1,5 +1,5 @@
 import pytest
-from src.chat import ChatError, ChatSession, trim_history
+from src.chat import ChatError, ChatSession, trim_history, user_error_message
 
 
 def msgs(n, size=40):
@@ -112,6 +112,12 @@ def test_send_returns_friendly_error_and_rolls_back_failed_turn():
 
     assert "private provider detail" not in str(raised.value)
     assert session.messages == []
+
+
+def test_ui_error_message_explains_provider_503_safely():
+    message = user_error_message(FakeAPIError(503, "private provider detail"))
+    assert "temporarily unavailable" in message
+    assert "private provider detail" not in message
 
 
 def test_send_stops_after_bounded_retries(monkeypatch):

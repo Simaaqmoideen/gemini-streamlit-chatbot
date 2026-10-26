@@ -29,10 +29,10 @@ The Streamlit interface was manually opened and visually inspected. The screensh
 | Check | Result |
 |---|---|
 | Starter test suite | 3 passed in 0.14s |
-| Current test suite | 12 passed in 3.12s (1 SDK deprecation warning) |
-| Live Gemini answer quality, five-turn memory, and response latency | Not evaluated. A short live streaming check returned a temporary-unavailable error, so latency could not be measured. |
+| Current test suite | 13 passed in 3.04s (1 SDK deprecation warning) |
+| Live Gemini answer quality, five-turn memory, and response latency | Gemini 3.8 Flash returned HTTP 503 (3.58s). Flash-Lite replied, but its first chunk took 33.06s with minimal thinking. No answer-quality evaluation was recorded. |
 
-The app now defaults Gemini reasoning to `low` through `THINKING_LEVEL` to favor faster first output. Google's docs note that Gemini 3.8 Flash defaults to medium and that lower thinking effort reduces time-to-answer. The test-suite comparison reports automated test health, not model answer quality. Complete the manual evaluation before drawing conclusions about generated answers.
+The app now defaults Gemini reasoning to `low` through `THINKING_LEVEL` to favor faster first output. Google's docs note that Gemini 3.8 Flash defaults to medium and that lower thinking effort reduces time-to-answer. The measured slow/failed live requests indicate provider latency or availability is also a factor. The test-suite comparison reports automated test health, not model answer quality. Complete the manual evaluation before drawing conclusions about generated answers.
 
 ## Folder map
 | Path | Purpose |

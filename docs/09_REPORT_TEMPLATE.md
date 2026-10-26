@@ -8,7 +8,7 @@
 
 ## 2. Abstract
 
-This project builds a small conversational study helper using a Gemini model. A Streamlit interface sends the system instruction and local conversation turns to the Gemini API through Google's Gen AI Python SDK. No training dataset is used, and conversations can optionally be saved as local JSON. The automated test suite passes 12 tests, and the interface was opened and visually checked. A short live streaming check returned a temporary-unavailable error, so live answer quality and latency were not measured.
+This project builds a small conversational study helper using a Gemini model. A Streamlit interface sends the system instruction and local conversation turns to the Gemini API through Google's Gen AI Python SDK. No training dataset is used, and conversations can optionally be saved as local JSON. The automated test suite passes 13 tests, and the interface was opened and visually checked. Live answer quality remains unmeasured; diagnostic requests exposed provider availability and latency issues.
 
 ## 3. Introduction
 
@@ -29,10 +29,10 @@ The Streamlit UI keeps a `ChatSession` in session state. `ChatSession` sends the
 
 | Measure | Starter baseline | Implemented project | Interpretation |
 |---|---:|---:|---|
-| Automated tests passing | 3 of 3 (0.14s) | 12 of 12 (3.12s; one SDK deprecation warning) | Unit coverage grew; this is not a measure of model quality. |
-| Live answer quality on 10 prompts | Not measured | Not measured | Short live request returned a temporary-unavailable error; manual set remains pending. |
+| Automated tests passing | 3 of 3 (0.14s) | 13 of 13 (3.04s; one SDK deprecation warning) | Unit coverage grew; this is not a measure of model quality. |
+| Live answer quality on 10 prompts | Not measured | Not measured | Manual set remains pending; 3.8 Flash returned HTTP 503 and one Flash-Lite response took 33.06s to first chunk. |
 | Context recall across 5 turns | Not measured | Not measured | Request construction is unit-tested; live Gemini recall is unverified. |
-| Response latency | Not measured | Not measured | Speed-tuned to low thinking; live stream test returned a temporary-unavailable error, so no latency result was recorded. |
+| Response latency | Not measured | 33.06s first chunk (Flash-Lite, minimal thinking); 3.8 Flash returned HTTP 503 | These are single diagnostic requests during a provider availability issue, not a stable benchmark. |
 
 ## 7. Discussion
 
@@ -41,7 +41,7 @@ The unit tests confirm conversation request construction, retry behavior, user-s
 ## 8. Limitations and ethics
 
 - LLM responses can be wrong or overconfident; the UI tells users to check important information.
-- Live API behavior, five-turn recall, answer quality, and latency remain unverified; a short request returned a temporary-unavailable error.
+- Live answer quality and five-turn recall remain unverified. Diagnostic calls showed HTTP 503 on Gemini 3.8 Flash and a 33.06s first chunk on Flash-Lite; provider latency may vary.
 - Local chat JSON is unencrypted. Users should avoid saving sensitive content.
 - History token counts are approximate and may not match Gemini's actual tokenizer.
 - Gemini API terms, availability, quotas, and billing apply to requests.

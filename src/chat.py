@@ -79,6 +79,14 @@ def _friendly_error(error: Exception, status_code: int | None) -> ChatError:
     return ChatError("Couldn't reach Gemini. Check your connection and API settings, then try again.")
 
 
+def user_error_message(error: Exception) -> str:
+    """Return a safe, useful message for provider errors that escape the client wrapper."""
+    status_code = _status_code(error)
+    if status_code is not None or _is_transient(error, status_code):
+        return str(_friendly_error(error, status_code))
+    return "The chat could not complete that request. Please try again."
+
+
 @dataclass
 class ChatSession:
     system: str = DEFAULT_SYSTEM

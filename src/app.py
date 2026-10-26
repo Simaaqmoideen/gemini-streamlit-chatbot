@@ -6,7 +6,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import streamlit as st
 from dotenv import load_dotenv
 
-from src.chat import ChatError, ChatSession
+from src.chat import ChatError, ChatSession, user_error_message
 
 load_dotenv()
 CHAT_PATH = pathlib.Path(__file__).resolve().parents[1] / "data" / "chat_history.json"
@@ -74,5 +74,5 @@ if prompt := st.chat_input("Ask something..."):
                 st.write_stream(session.stream(prompt))
         except ChatError as exc:
             st.error(str(exc))
-        except Exception:
-            st.error("The chat could not complete that request. Please try again.")
+        except Exception as exc:
+            st.error(user_error_message(exc))
