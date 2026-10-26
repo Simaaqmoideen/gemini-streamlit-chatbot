@@ -3,17 +3,17 @@
 ## Functional requirements (MoSCoW)
 
 ### Must have
-- [ ] Chat UI with message history
-- [ ] Calls an LLM API with the full conversation context
-- [ ] Configurable system prompt (persona / rules)
-- [ ] API key read from environment, never hard-coded
-- [ ] Graceful error handling (rate limit, network, empty input)
+- [x] Chat UI with message history
+- [x] Calls an LLM API with the full conversation context
+- [x] Configurable system prompt (persona / rules)
+- [x] API key read from environment, never hard-coded
+- [x] Graceful error handling (rate limit, network, empty input)
 
 ### Should have
-- [ ] Streaming responses
-- [ ] Trim old history to stay inside the context window
-- [ ] Clear / new conversation button
-- [ ] Save and load chats to a local JSON file
+- [x] Streaming responses
+- [x] Trim old history to stay inside the context window
+- [x] Clear / new conversation button
+- [x] Save and load chats to a local JSON file
 
 ### Could have (stretch)
 - [ ] Retrieval over your own PDFs (RAG)

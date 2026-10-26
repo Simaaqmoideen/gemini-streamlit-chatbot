@@ -135,3 +135,85 @@ def test_send_stops_after_bounded_retries(monkeypatch):
 
     assert client.models.calls == 3
     assert session.messages == []
+
+
+def test_stream_yields_chunks_and_saves_complete_reply():
+    class StreamingModels:
+        def __init__(self):
+            self.calls = []
+
+        def generate_content_stream(self, **kwargs):
+            self.calls.append(kwargs)
+            yield FakeResponse("Hello")
+            yield FakeResponse(" there")
+
+    class StreamingClient:
+        def __init__(self):
+            self.models = StreamingModels()
+
+    client = StreamingClient()
+    session = ChatSession(_client=client)
+
+    assert list(session.stream("Hi")) == ["Hello", " there"]
+    assert client.models.calls[0]["contents"] == [
+        {"role": "user", "parts": [{"text": "Hi"}]}
+    ]
+    assert session.messages[-1] == {"role": "assistant", "content": "Hello there"}
+
+
+def test_chat_session_saves_and_loads_local_json(tmp_path):
+    source = ChatSession(
+        system="Be concise",
+        model="gemini-test-model",
+        max_tokens=300,
+        temperature=0.4,
+        history_budget=1200,
+        messages=[{"role": "user", "content": "Hi"}],
+        _client=object(),
+    )
+    path = tmp_path / "saved" / "chat.json"
+
+    source.save(path)
+    loaded = ChatSession.load(path)
+
+    assert loaded.system == source.system
+    assert loaded.model == source.model
+    assert loaded.max_tokens == source.max_tokens
+    assert loaded.temperature == source.temperature
+    assert loaded.history_budget == source.history_budget
+    assert loaded.messages == source.messages
+    assert loaded._client is None
+
+
+def test_chat_session_rejects_invalid_saved_json(tmp_path):
+    path = tmp_path / "invalid.json"
+    path.write_text('{"version": 1, "messages": [{"role": "tool"}]}', encoding="utf-8")
+
+    with pytest.raises(ValueError, match="invalid messages"):
+        ChatSession.load(path)
+
+
+def test_client_reads_gemini_api_key_from_environment(monkeypatch):
+    from google import genai
+
+    expected_key = "test-key-from-environment"
+    monkeypatch.setenv("GEMINI_API_KEY", expected_key)
+    client = FakeClient([])
+    received = {}
+
+    def make_client(api_key):
+        received["api_key"] = api_key
+        return client
+
+    monkeypatch.setattr(genai, "Client", make_client)
+
+    assert ChatSession()._get_client() is client
+    assert received["api_key"] == expected_key
+
+
+def test_clear_starts_a_new_conversation():
+    session = ChatSession(messages=[{"role": "user", "content": "old turn"}])
+
+    session.clear()
+
+    assert session.messages == []

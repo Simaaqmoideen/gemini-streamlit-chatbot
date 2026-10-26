@@ -17,6 +17,17 @@ On macOS or Linux, activate with `source .venv/bin/activate` and copy the templa
 Run the tests with `python -m pytest -q` from this folder.
 For a terminal API smoke test, set `GEMINI_API_KEY` in `.env` and run `python -m src.chat`. In the app, use the sidebar to set assistant instructions, reply length, and temperature, or start a new conversation.
 Temporary rate-limit, server, and network failures are retried a limited number of times; errors shown in the UI avoid exposing provider details.
+Replies stream into the chat. The sidebar can save or load one conversation at `data/chat_history.json`; this file is local, unencrypted, and excluded from Git.
+
+## Results and evaluation
+
+| Check | Result |
+|---|---|
+| Starter test suite | 3 passed in 0.14s |
+| Current test suite | 12 passed in 4.96s (1 SDK deprecation warning) |
+| Live Gemini answer quality, five-turn memory, and response latency | Not evaluated: no local `GEMINI_API_KEY` was configured. |
+
+The test-suite comparison reports automated test health, not model answer quality. Add a local key and complete the manual evaluation before drawing conclusions about generated answers.
 
 ## Folder map
 | Path | Purpose |
