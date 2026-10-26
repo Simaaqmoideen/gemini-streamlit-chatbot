@@ -21,10 +21,14 @@ Replies stream into the chat. The sidebar can save or load one conversation at `
 
 ## Results and evaluation
 
+The Streamlit interface was manually opened and visually inspected. The screenshot below shows the chat composer and settings sidebar; no Gemini request was made because no local API key was configured.
+
+![AI Chatbot Streamlit interface](reports/chatbot-ui.png)
+
 | Check | Result |
 |---|---|
 | Starter test suite | 3 passed in 0.14s |
-| Current test suite | 12 passed in 4.96s (1 SDK deprecation warning) |
+| Current test suite | 12 passed in 2.61s (1 SDK deprecation warning) |
 | Live Gemini answer quality, five-turn memory, and response latency | Not evaluated: no local `GEMINI_API_KEY` was configured. |
 
 The test-suite comparison reports automated test health, not model answer quality. Add a local key and complete the manual evaluation before drawing conclusions about generated answers.

@@ -1,8 +1,8 @@
 # Definition of Done: AI Chatbot using Generative AI
 
 ## Deliverables
-- [ ] Working Streamlit app
-- [ ] README with screenshots
+- [x] Working Streamlit app (opened and visually checked; Gemini response requires a local key)
+- [x] README with screenshots
 - [x] Test results
 - [ ] Short demo video or GIF
 
