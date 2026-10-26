@@ -14,6 +14,7 @@ Copy-Item .env.example .env
 streamlit run src/app.py
 ```
 On macOS or Linux, activate with `source .venv/bin/activate` and copy the template with `cp .env.example .env`.
+`THINKING_LEVEL` defaults to `low` for faster everyday chat replies; set it to `medium` or `high` in `.env` when a task needs more reasoning (which can add delay).
 Run the tests with `python -m pytest -q` from this folder.
 For a terminal API smoke test, set `GEMINI_API_KEY` in `.env` and run `python -m src.chat`. In the app, use the sidebar to set assistant instructions, reply length, and temperature, or start a new conversation.
 Temporary rate-limit, server, and network failures are retried a limited number of times; errors shown in the UI avoid exposing provider details.
@@ -21,17 +22,17 @@ Replies stream into the chat. The sidebar can save or load one conversation at `
 
 ## Results and evaluation
 
-The Streamlit interface was manually opened and visually inspected. The screenshot below shows the chat composer and settings sidebar; no Gemini request was made because no local API key was configured.
+The Streamlit interface was manually opened and visually inspected. The screenshot below shows the chat composer and settings sidebar. A later short live streaming check returned a temporary-unavailable error, so no generated-answer evaluation was recorded.
 
 ![AI Chatbot Streamlit interface](reports/chatbot-ui.png)
 
 | Check | Result |
 |---|---|
 | Starter test suite | 3 passed in 0.14s |
-| Current test suite | 12 passed in 2.61s (1 SDK deprecation warning) |
-| Live Gemini answer quality, five-turn memory, and response latency | Not evaluated: no local `GEMINI_API_KEY` was configured. |
+| Current test suite | 12 passed in 3.12s (1 SDK deprecation warning) |
+| Live Gemini answer quality, five-turn memory, and response latency | Not evaluated. A short live streaming check returned a temporary-unavailable error, so latency could not be measured. |
 
-The test-suite comparison reports automated test health, not model answer quality. Add a local key and complete the manual evaluation before drawing conclusions about generated answers.
+The app now defaults Gemini reasoning to `low` through `THINKING_LEVEL` to favor faster first output. Google's docs note that Gemini 3.8 Flash defaults to medium and that lower thinking effort reduces time-to-answer. The test-suite comparison reports automated test health, not model answer quality. Complete the manual evaluation before drawing conclusions about generated answers.
 
 ## Folder map
 | Path | Purpose |

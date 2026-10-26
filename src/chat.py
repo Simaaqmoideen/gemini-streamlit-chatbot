@@ -10,6 +10,7 @@ DEFAULT_SYSTEM = (
     "You are a helpful, concise assistant. If you are not sure about something, "
     "say so instead of guessing."
 )
+DEFAULT_THINKING_LEVEL = "low"
 MAX_API_ATTEMPTS = 3
 RETRY_DELAYS_SECONDS = (0.25, 0.5)
 RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
@@ -125,6 +126,11 @@ class ChatSession:
                             "system_instruction": self.system,
                             "max_output_tokens": self.max_tokens,
                             "temperature": self.temperature,
+                            "thinking_config": {
+                                "thinking_level": os.getenv(
+                                    "THINKING_LEVEL", DEFAULT_THINKING_LEVEL
+                                )
+                            },
                         },
                     )
                     reply = response.text or ""
@@ -168,6 +174,11 @@ class ChatSession:
                 "system_instruction": self.system,
                 "max_output_tokens": self.max_tokens,
                 "temperature": self.temperature,
+                "thinking_config": {
+                    "thinking_level": os.getenv(
+                        "THINKING_LEVEL", DEFAULT_THINKING_LEVEL
+                    )
+                },
             },
         }
         output_parts = []

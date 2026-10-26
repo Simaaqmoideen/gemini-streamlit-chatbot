@@ -8,7 +8,7 @@
 
 ## 2. Abstract
 
-This project builds a small conversational study helper using a Gemini model. A Streamlit interface sends the system instruction and local conversation turns to the Gemini API through Google's Gen AI Python SDK. No training dataset is used, and conversations can optionally be saved as local JSON. The automated test suite passes 12 tests, and the interface was opened and visually checked. Live answer quality and response latency were not measured because a local Gemini API key was not configured.
+This project builds a small conversational study helper using a Gemini model. A Streamlit interface sends the system instruction and local conversation turns to the Gemini API through Google's Gen AI Python SDK. No training dataset is used, and conversations can optionally be saved as local JSON. The automated test suite passes 12 tests, and the interface was opened and visually checked. A short live streaming check returned a temporary-unavailable error, so live answer quality and latency were not measured.
 
 ## 3. Introduction
 
@@ -23,32 +23,32 @@ Conversational assistants can help users explore questions and follow up without
 
 ## 5. Method
 
-The Streamlit UI keeps a `ChatSession` in session state. `ChatSession` sends the configured system instruction, temperature, output limit, and prior user/model turns through Google's Gen AI SDK. Assistant turns are translated to Gemini's `model` role. UI replies use the SDK streaming call; transient failures are retried a bounded number of times, and displayed errors omit provider details. A rough character-based estimate trims old history. Local JSON save/load preserves conversation settings and validates message roles/content.
+The Streamlit UI keeps a `ChatSession` in session state. `ChatSession` sends the configured system instruction, temperature, output limit, low-by-default Gemini thinking level, and prior user/model turns through Google's Gen AI SDK. Assistant turns are translated to Gemini's `model` role. UI replies use the SDK streaming call; transient failures are retried a bounded number of times, and displayed errors omit provider details. A rough character-based estimate trims old history. Local JSON save/load preserves conversation settings and validates message roles/content.
 
 ## 6. Results
 
 | Measure | Starter baseline | Implemented project | Interpretation |
 |---|---:|---:|---|
-| Automated tests passing | 3 of 3 (0.14s) | 12 of 12 (2.61s; one SDK deprecation warning) | Unit coverage grew; this is not a measure of model quality. |
-| Live answer quality on 10 prompts | Not measured | Not measured | No local API key was configured. |
+| Automated tests passing | 3 of 3 (0.14s) | 12 of 12 (3.12s; one SDK deprecation warning) | Unit coverage grew; this is not a measure of model quality. |
+| Live answer quality on 10 prompts | Not measured | Not measured | Short live request returned a temporary-unavailable error; manual set remains pending. |
 | Context recall across 5 turns | Not measured | Not measured | Request construction is unit-tested; live Gemini recall is unverified. |
-| Response latency | Not measured | Not measured | No live request was made. |
+| Response latency | Not measured | Not measured | Speed-tuned to low thinking; live stream test returned a temporary-unavailable error, so no latency result was recorded. |
 
 ## 7. Discussion
 
-The unit tests confirm conversation request construction, retry behavior, user-safe error conversion, streaming chunk handling, and local JSON persistence. They use fake clients and do not measure Gemini's generated answers. The Streamlit app opened successfully in a local browser and its interface is shown in `reports/chatbot-ui.png`. A response demo recording was not captured because no Gemini API key was configured.
+The unit tests confirm conversation request construction, retry behavior, user-safe error conversion, streaming chunk handling, low thinking-level configuration, and local JSON persistence. They use fake clients and do not measure Gemini's generated answers. The Streamlit app opened successfully in a local browser and its interface is shown in `reports/chatbot-ui.png`. A response demo recording was not captured because the live streaming check did not produce an answer.
 
 ## 8. Limitations and ethics
 
 - LLM responses can be wrong or overconfident; the UI tells users to check important information.
-- Live API behavior, authentication, five-turn recall, answer quality, and latency remain unverified without a key.
+- Live API behavior, five-turn recall, answer quality, and latency remain unverified; a short request returned a temporary-unavailable error.
 - Local chat JSON is unencrypted. Users should avoid saving sensitive content.
 - History token counts are approximate and may not match Gemini's actual tokenizer.
 - Gemini API terms, availability, quotas, and billing apply to requests.
 
 ## 9. Future work
 
-Configure a local `GEMINI_API_KEY`, run the terminal smoke test, manually assess a 10-question set, verify five-turn recall, test a network failure, and record the required UI demo. Deployment is a Could-have stretch item and is not part of this build.
+Retry the terminal smoke test when Gemini is available, manually assess a 10-question set, verify five-turn recall, test a network failure, and record the required UI demo. Deployment is a Could-have stretch item and is not part of this build.
 
 ## 10. References
 
