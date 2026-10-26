@@ -17,9 +17,19 @@ with st.sidebar:
     st.header("Settings")
     session.system = st.text_area("System prompt", value=session.system or DEFAULT_SYSTEM, height=140)
     session.max_tokens = st.slider("Max reply tokens", 128, 2048, session.max_tokens, 64)
+    session.temperature = st.slider(
+        "Temperature",
+        min_value=0.0,
+        max_value=2.0,
+        value=float(session.temperature),
+        step=0.1,
+        help="Lower values make replies more focused; higher values add variety.",
+    )
     if st.button("New conversation"):
         session.clear()
         st.rerun()
+
+st.caption("AI can make mistakes. Check important information.")
 
 for m in session.messages:
     with st.chat_message(m["role"]):

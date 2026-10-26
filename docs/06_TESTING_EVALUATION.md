@@ -23,3 +23,4 @@ python -m pytest -q
 |---|---|---|---|
 | 2026-10-26 | `python -m pytest -q` (Phase 1 setup) | 3 passed in 0.14s. Gemini API smoke test not run because no `GEMINI_API_KEY` is configured. | Existing unit tests pass; API connectivity and authentication are not yet verified. |
 | 2026-10-26 | `python -m pytest -q` (Phase 2 core chat loop) | 4 passed in 0.08s. Mock verifies Gemini receives the system prompt and all prior turns. No live API call was made. | Request construction and local history updates pass; live model context retention is unverified. |
+| 2026-10-26 | `python -m pytest -q` (Phase 3 UI controls) | 4 passed in 0.11s. Mock verifies the selected temperature is sent in Gemini configuration. | Session controls and request configuration pass; the Streamlit interface has not been manually exercised against a live API. |

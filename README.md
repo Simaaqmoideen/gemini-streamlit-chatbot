@@ -15,7 +15,7 @@ streamlit run src/app.py
 ```
 On macOS or Linux, activate with `source .venv/bin/activate` and copy the template with `cp .env.example .env`.
 Run the tests with `python -m pytest -q` from this folder.
-For a terminal API smoke test, set `GEMINI_API_KEY` in `.env` and run `python -m src.chat`.
+For a terminal API smoke test, set `GEMINI_API_KEY` in `.env` and run `python -m src.chat`. In the app, use the sidebar to set assistant instructions, reply length, and temperature, or start a new conversation.
 
 ## Folder map
 | Path | Purpose |

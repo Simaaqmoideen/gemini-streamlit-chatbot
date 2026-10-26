@@ -19,9 +19,9 @@ Implement `ChatSession.send()` with history. Verify the model remembers earlier 
 ## Phase 3: UI
 Build the Streamlit chat page. Add sidebar controls: persona, temperature, clear chat.
 
-- [ ] Task completed
-- [ ] Notes written in the project log
-- [ ] Changes committed
+- [x] Task completed
+- [x] Notes written in the project log
+- [x] Changes committed
 
 ## Phase 4: Robustness
 History trimming, retries / error messages, input validation. Write the unit tests.
@@ -40,4 +40,6 @@ Streaming, save/load chats, README screenshots, deploy, record a 2-minute demo.
 ## Project log
 | Date | What I did | Blockers | Next |
 |---|---|---|---|
-| 2026-10-26 | Added Gemini SDK dependency and environment configuration, then implemented `ChatSession.send()` with Gemini conversation context; test suite passed (4 tests). | No local `GEMINI_API_KEY`, so the terminal smoke test and live five-turn memory check remain pending. | Add the key locally, run `python -m src.chat`, then verify context across five turns. |
+| 2026-10-26 | Added Gemini SDK dependency and environment configuration; suite passed (3 tests). | No local `GEMINI_API_KEY`; Phase 1 one-shot smoke test pending. | Set key locally and run `python -m src.chat`. |
+| 2026-10-26 | Implemented Gemini `ChatSession.send()` with local conversation context; suite passed (4 tests). | No local API key; live five-turn memory check pending. | Verify context across five turns when the key is configured. |
+| 2026-10-26 | Added persona, reply length, temperature, and new-conversation controls to the Streamlit UI; suite passed (4 tests). | Live UI/API interaction not verified without an API key. | Phase 4: add validation and friendly API error handling. |

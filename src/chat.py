@@ -37,6 +37,7 @@ class ChatSession:
     system: str = DEFAULT_SYSTEM
     model: str = field(default_factory=lambda: os.getenv("MODEL", "gemini-3.8-flash"))
     max_tokens: int = 1024
+    temperature: float = 0.7
     history_budget: int = 6000
     messages: list = field(default_factory=list)
     _client: object = None
@@ -67,6 +68,7 @@ class ChatSession:
             config={
                 "system_instruction": self.system,
                 "max_output_tokens": self.max_tokens,
+                "temperature": self.temperature,
             },
         )
         reply = response.text or ""
